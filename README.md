@@ -57,7 +57,7 @@ Es interesante también mirar el ejemplo q tenemos (también en node...): [xray 
 # Detalle del template
 La pantilla tiene 3 secciones y la creación de los recursos necesarios.
 
-    ```YAML
+```YAML
     Description:
     Parameters:
     Resources:
