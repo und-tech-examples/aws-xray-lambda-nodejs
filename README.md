@@ -11,21 +11,25 @@ Primeramente se instala el SDK del X-Ray con npm. Puedes usar un contenedor chai
 
 ```bash
 docker run -ti --privileged -v C:\Users\rctaptap\laboratorios:/data --name node_01 -d chainio/lambda-ci-nodejs6.10 /bin/bash
-    docker exec -ti node_01 bash
+docker exec -ti node_01 bash
 ```
     
 Se instala el SDK del X-Ray con npm
-    ``````bash    
-    npm install aws-xray-sdk```
+```bash 
+npm install aws-xray-sdk
+```
     
 Luego subes el código en un archivo comprimido ZIP en S3, para llamar a tu código desde la plantilla de CloudFormation.
-    ```YAML
-      Code:
-        S3Bucket: "bucket"
-        S3Key: "rctaptap/aws-xray-lambda-nodejs.zip"```
+```YAML
+Code:
+    S3Bucket: "bucket"
+    S3Key: "rctaptap/aws-xray-lambda-nodejs.zip"
+```
         
 Una vez modificada la plantilla puedes ejecutar desde la consola de AWS en el servicio CloudFormation o con AWS CLI con el siguiente comando:
-    ```aws cloudformation deploy --template-file template.yaml --stack-name aws-xray-lambda-nodejs --capabilities CAPABILITY_NAMED_IAM --region ap-northeast-1```
+```bash
+aws cloudformation deploy --template-file template.yaml --stack-name aws-xray-lambda-nodejs --capabilities CAPABILITY_NAMED_IAM --region ap-northeast-1
+```
 
 # Detalle del código
 
