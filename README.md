@@ -66,20 +66,6 @@ Resources:
     BucketSource:
     LambdaInvokePermission:
     TableDest:
-```
-
-```YAML
-MyLambdaFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-        CodeUri: ./code
-        ...
-
-MyApi:
-    Type: AWS::Serverless::Api
-    Properties:
-        DefinitionUri: ./specs/swagger.yaml
-        ...
 ```    
 Description
 Parameters
