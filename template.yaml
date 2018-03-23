@@ -1,0 +1,169 @@
+Description: Function Lambda to execute whit S3 and DynamoDB to send trace to XRAY
+Parameters:
+  Owner:
+    Type: String
+    Default: und
+  Project:
+    Type: String
+    Default: xray
+  Environment:
+    Type: String
+    Default: demo
+  Type:
+    Type: String
+    Default: serverless
+Resources:
+  MyLambdaFunction:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      FunctionName : !Join
+        - "-"
+        - - !Sub ${Owner}
+          - !Sub ${Project}
+          - !Sub ${Environment}
+          - !Sub ${Type}
+      Handler: index.handler
+      Runtime: nodejs6.10
+      Code:
+        S3Bucket: "bucket"
+        S3Key: "rctaptap/aws-xray-lambda-nodejs.zip"
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Description: "Amazon function to send traces to xray with S3 and DynamoDB"
+      MemorySize: 128
+      Timeout: 3
+      TracingConfig:
+        Mode: Active 
+      Environment:
+        Variables:
+          my_table: !Ref TableDest
+    DependsOn: 
+      - TableDest
+      - LambdaExecutionRole
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName : !Join
+        - "."
+        - - !Sub ${Owner}
+          - !Sub ${Project}
+          - !Sub ${Environment}
+          - !Sub ${Type}
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: !Join
+        - "."
+        - - !Sub ${Owner}
+          - !Sub ${Project}
+          - !Sub ${Environment}
+          - !Sub ${Type}
+          - "cloudwatchlogs"
+        PolicyDocument: 
+          Version: "2012-10-17"
+          Statement: 
+            - Effect: "Allow"
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: "*"
+      - PolicyName: !Join
+        - "."
+        - - !Sub ${Owner}
+          - !Sub ${Project}
+          - !Sub ${Environment}
+          - !Sub ${Type}
+          - "dynamodb"
+        PolicyDocument: 
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'dynamodb:DeleteItem'
+                - 'dynamodb:GetItem'
+                - 'dynamodb:PutItem'
+                - 'dynamodb:Scan'
+                - 'dynamodb:UpdateItem'
+              Resource: !GetAtt TableDest.Arn
+      - PolicyName: !Join
+        - "."
+        - - !Sub ${Owner}
+          - !Sub ${Project}
+          - !Sub ${Environment}
+          - !Sub ${Type}
+          - "xray"
+        PolicyDocument: 
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'xray:PutTraceSegments'
+                - 'xray:PutTelemetryRecords'
+              Resource: "*"
+    DependsOn: TableDest
+  BucketSource:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Join
+        - "."
+        - - !Sub ${Owner}
+          - !Sub ${Project}
+          - !Sub ${Environment}
+          - !Sub ${Type}
+      NotificationConfiguration:
+        LambdaConfigurations:
+            - Function: !GetAtt MyLambdaFunction.Arn
+              Event: "s3:ObjectCreated:*"
+    DependsOn: 
+      - LambdaInvokePermission
+  LambdaInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !GetAtt MyLambdaFunction.Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+      SourceArn: !Join
+        - ":"
+        - - "arn"
+          - "aws"
+          - "s3"
+          - ":"
+          - !Join
+            - "."
+            - - !Sub ${Owner}
+              - !Sub ${Project}
+              - !Sub ${Environment}
+              - !Sub ${Type}
+    DependsOn: 
+      - MyLambdaFunction
+  TableDest:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName: !Join
+        - "-"
+        - - !Sub ${Owner}
+          - !Sub ${Project}
+          - !Sub ${Environment}
+          - !Sub ${Type}
+
+
+
+
