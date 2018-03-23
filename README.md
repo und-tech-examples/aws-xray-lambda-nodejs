@@ -66,6 +66,7 @@ Resources:
     BucketSource:
     LambdaInvokePermission:
     TableDest:
+    ...
 ```    
 Description
 Parameters
