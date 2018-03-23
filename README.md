@@ -65,7 +65,8 @@ La pantilla tiene 3 secciones y la creación de los recursos necesarios.
       LambdaExecutionRole:
       BucketSource:
       LambdaInvokePermission:
-      TableDest:```
+      TableDest:
+```
       
 Description
 Parameters
