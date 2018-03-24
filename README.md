@@ -96,11 +96,11 @@ Parameters:
 ```    
 Los parámetros de entrada son utilizados para ingresar el nombre de la función, s3, role IAM, política inline y la tabla dynamoDB.
 
-Función: und-xray-demo-serverless
-S3: und.xray.demo.serverless
-Role IAM: und.xray.demo.serverless
-Política Inline: und.xray.demo.serverless.[service]
-Tabla: und-xray-demo-serverless
+* Función: und-xray-demo-serverless
+* S3: und.xray.demo.serverless
+* Role IAM: und.xray.demo.serverless
+* Política Inline: und.xray.demo.serverless.[service]
+* Tabla: und-xray-demo-serverless
 
 # Resources
 ## MyLambdaFunction
@@ -133,6 +133,139 @@ MyLambdaFunction:
       - LambdaExecutionRole
 ```    
 ## LambdaExecutionRole
+```YAML
+ LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName : !Join
+        - "."
+        - - !Sub ${Owner}
+          - !Sub ${Project}
+          - !Sub ${Environment}
+          - !Sub ${Type}
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: !Join
+        - "."
+        - - !Sub ${Owner}
+          - !Sub ${Project}
+          - !Sub ${Environment}
+          - !Sub ${Type}
+          - "cloudwatchlogs"
+        PolicyDocument: 
+          Version: "2012-10-17"
+          Statement: 
+            - Effect: "Allow"
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: "*"
+      - PolicyName: !Join
+        - "."
+        - - !Sub ${Owner}
+          - !Sub ${Project}
+          - !Sub ${Environment}
+          - !Sub ${Type}
+          - "dynamodb"
+        PolicyDocument: 
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'dynamodb:DeleteItem'
+                - 'dynamodb:GetItem'
+                - 'dynamodb:PutItem'
+                - 'dynamodb:Scan'
+                - 'dynamodb:UpdateItem'
+              Resource: !GetAtt TableDest.Arn
+      - PolicyName: !Join
+        - "."
+        - - !Sub ${Owner}
+          - !Sub ${Project}
+          - !Sub ${Environment}
+          - !Sub ${Type}
+          - "xray"
+        PolicyDocument: 
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'xray:PutTraceSegments'
+                - 'xray:PutTelemetryRecords'
+              Resource: "*"
+    DependsOn: TableDest
+```    
 ## BucketSource
+```YAML
+BucketSource:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Join
+        - "."
+        - - !Sub ${Owner}
+          - !Sub ${Project}
+          - !Sub ${Environment}
+          - !Sub ${Type}
+      NotificationConfiguration:
+        LambdaConfigurations:
+            - Function: !GetAtt MyLambdaFunction.Arn
+              Event: "s3:ObjectCreated:*"
+    DependsOn: 
+      - LambdaInvokePermission
+```    
 ## LambdaInvokePermission
+```YAML
+LambdaInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !GetAtt MyLambdaFunction.Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+      SourceArn: !Join
+        - ":"
+        - - "arn"
+          - "aws"
+          - "s3"
+          - ":"
+          - !Join
+            - "."
+            - - !Sub ${Owner}
+              - !Sub ${Project}
+              - !Sub ${Environment}
+              - !Sub ${Type}
+    DependsOn: 
+      - MyLambdaFunction
+```    
 ## TableDest
+```YAML
+TableDest:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName: !Join
+        - "-"
+        - - !Sub ${Owner}
+          - !Sub ${Project}
+          - !Sub ${Environment}
+          - !Sub ${Type}
+```    
+
