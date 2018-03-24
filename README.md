@@ -77,11 +77,62 @@ Resources:
     LambdaInvokePermission:
     TableDest:
 ```    
-Description
-Parameters
-Resources
-MyLambdaFunction
-LambdaExecutionRole
-BucketSource
-LambdaInvokePermission
-TableDest
+# Parameters
+
+```YAML
+Parameters:
+  Owner:
+    Type: String
+    Default: und
+  Project:
+    Type: String
+    Default: xray
+  Environment:
+    Type: String
+    Default: demo
+  Type:
+    Type: String
+    Default: serverless
+```    
+Los parámetros de entrada son utilizados para ingresar el nombre de la función, s3, role IAM, política inline y la tabla dynamoDB.
+
+Función: und-xray-demo-serverless
+S3: und.xray.demo.serverless
+Role IAM: und.xray.demo.serverless
+Política Inline: und.xray.demo.serverless.[service]
+Tabla: und-xray-demo-serverless
+
+# Resources
+## MyLambdaFunction
+```YAML
+MyLambdaFunction:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      FunctionName : !Join
+        - "-"
+        - - !Sub ${Owner}
+          - !Sub ${Project}
+          - !Sub ${Environment}
+          - !Sub ${Type}
+      Handler: index.handler
+      Runtime: nodejs6.10
+      Code:
+        S3Bucket: "bucket"
+        S3Key: "rctaptap/aws-xray-lambda-nodejs.zip"
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Description: "Amazon function to send traces to xray with S3 and DynamoDB"
+      MemorySize: 128
+      Timeout: 3
+      TracingConfig:
+        Mode: Active 
+      Environment:
+        Variables:
+          my_table: !Ref TableDest
+    DependsOn: 
+      - TableDest
+      - LambdaExecutionRole
+```    
+## LambdaExecutionRole
+## BucketSource
+## LambdaInvokePermission
+## TableDest
