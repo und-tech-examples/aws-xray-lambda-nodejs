@@ -20,12 +20,12 @@ Se instala el SDK del X-Ray con npm
 npm install aws-xray-sdk
 ```
 
-    Puedes instalar el módulo de X-Ray con npm usando un contenedor chainio/lambda-ci-nodejs6.10
+>Puedes instalar el módulo de X-Ray con npm usando un contenedor chainio/lambda-ci-nodejs6.10
 
-    ```bash
-    docker run -ti --privileged -v C:\Users\rctaptap\laboratorios:/data --name node_01 -d chainio/lambda-ci-nodejs6.10 /bin/bash
-    docker exec -ti node_01 bash
-    ```
+>```bash
+>docker run -ti --privileged -v C:\Users\rctaptap\laboratorios:/data --name node_01 -d chainio/lambda-ci-nodejs6.10 /bin/bash
+>docker exec -ti node_01 bash
+>```
 
 Una vez subido el archivo comprimido en .zip a s3 se ejecuta la plantilla en el servicio CloudFormation desde la consola web o con AWS CLI con el siguiente comando:
 ```bash
