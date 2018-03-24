@@ -29,7 +29,7 @@ npm install aws-xray-sdk
 
 Una vez subido el archivo comprimido en .zip a s3 se ejecuta la plantilla en el servicio CloudFormation desde la consola web o con AWS CLI con el siguiente comando:
 ```bash
-aws cloudformation deploy --template-file template.yaml --stack-name aws-xray-lambda-nodejs --capabilities CAPABILITY_NAMED_IAM --region ap-northeast-1
+aws cloudformation deploy --template-file template.yaml --stack-name aws-xray-lambda-nodejs --parameter-overrides Owner=und Project=xray Environment=demo Type=serverless SourceBucketName="[bucketSource]" SourceBucketKey="[rctaptap/aws-xray-s3-demo.zip]" --capabilities CAPABILITY_NAMED_IAM --region ap-northeast-1 
 ```
 
 # [Detalle del código](https://github.com/OrbisVentures/aws-xray-lambda-nodejs/blob/master/index.js)
