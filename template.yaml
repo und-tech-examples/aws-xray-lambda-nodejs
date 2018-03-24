@@ -12,6 +12,12 @@ Parameters:
   Type:
     Type: String
     Default: serverless
+  SourceBucketName:
+    Type: String
+    Default: bucket
+  SourceBucketKey:
+    Type: String
+    Default: rctaptap/aws-xray-lambda-nodejs.zip
 Resources:
   MyLambdaFunction:
     Type: "AWS::Lambda::Function"
@@ -25,8 +31,8 @@ Resources:
       Handler: index.handler
       Runtime: nodejs6.10
       Code:
-        S3Bucket: "bucket"
-        S3Key: "rctaptap/aws-xray-lambda-nodejs.zip"
+        S3Bucket: !Sub ${SourceBucketName}
+        S3Key: !Sub ${SourceBucketKey}
       Role: !GetAtt LambdaExecutionRole.Arn
       Description: "Amazon function to send traces to xray with S3 and DynamoDB"
       MemorySize: 128
