@@ -34,7 +34,7 @@ Una vez modificada la plantilla puedes ejecutar desde la consola de AWS en el se
 aws cloudformation deploy --template-file template.yaml --stack-name aws-xray-lambda-nodejs --capabilities CAPABILITY_NAMED_IAM --region ap-northeast-1
 ```
 
-# Detalle del código
+# [Detalle del código](https://github.com/OrbisVentures/aws-xray-lambda-nodejs/blob/master/index.js)
 
 Únicamente iniciar el método de “capture calls” del SDK y asignando una variable “aws” con la función deseada:
 
