@@ -2,7 +2,7 @@
 Demo para depurar y analizar sus aplicaciones con AWS x-ray para encontrar la causa raíz de los problemas y rendimiento.
 
 # ![demo1](aws-xray-lambda-nodejs-demo-1-.png)
-# ![demo2](aws-xray-lambda-nodejs-demo-1-.png)
+# ![demo2](aws-xray-lambda-nodejs-demo-2-.png)
 
 # Arquitectura
 # ![arquitectura](aws-xray-lambda-nodejs-architecture.png)
