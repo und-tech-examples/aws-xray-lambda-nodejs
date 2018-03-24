@@ -36,27 +36,34 @@ aws cloudformation deploy --template-file template.yaml --stack-name aws-xray-la
 
 # [Detalle del código](https://github.com/OrbisVentures/aws-xray-lambda-nodejs/blob/master/index.js)
 
-Únicamente iniciar el método de “capture calls” del SDK y asignando una variable “aws” con la función deseada:
+Para enviar la información a x-ray se debe activar la opción "Enable active tracing", lo cual se hace en el template para cloudformation.
+
+```YAML
+TracingConfig:
+    Mode: Active 
+```
+
+Y se debe iniciar el método de “capture calls” del SDK al llamar a los servicios de aws, de está forma cualquier llamado a los diferentes servicios (SQS, SNS, DynamoBD) será registrado en x-ray.
 
 ```javascript
 var xray = require("aws-xray-sdk");
 var aws = xray.captureAWS(require("aws-sdk"));
 ```
 
-El getSegment() trae el “segment actual” que es inmutable (o sea, iniciado por el ALB/APIGw, o lo que sea...) y el addAnnotation() agrega una nota el segment.
+Ya si se desea un mayor detalle se puede insertar datos como si estuvieramos haciendo un console.log llamando al getSegment() que trae el “segment actual” que es inmutable (o sea, iniciado por el ALB/APIGw, o lo que sea...) y el addAnnotation() agrega una nota el segment.
 
 ```javascript
 var demo_segment = xray.getSegment().addNewSubsegment("demo");
 demo_segment.addAnnotation("Object", object);
 ```
 
-Con el addMetadata,  tu también puedes agregar cualquier otro obyecto el trace, aún que no sea “searchable”.
+Con el addMetadata, también puedes agregar cualquier otro objeto el trace, aún que no sea “searchable”.
 
 ```javascript
 demo_segment.addMetadata(object, data);
 ```
   
-Después de finalizar el proceso y cerrar el callback, también cerramos el segment. Debes hacerlo con cualquier segment que sea customizado por vos, mientras los segmentos “inmutables” van a ser cerrados por el propio SDK.
+Después de finalizar el proceso y cerrar el callback, también cerramos el segment. Debes hacerlo con cualquier segment que sea customizado, mientras los segmentos “inmutables” van a ser cerrados por el propio SDK.
 
 ```javascript
 demo_segment.close();
