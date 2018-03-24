@@ -35,26 +35,30 @@ aws cloudformation deploy --template-file template.yaml --stack-name aws-xray-la
 
 Únicamente iniciar el método de “capture calls” del SDK y asignando una variable “aws” con la función deseada:
 
-    ```JAVASCRIPT
-    var xray = require("aws-xray-sdk");
-    var aws = xray.captureAWS(require("aws-sdk"));```
+```javascript
+var xray = require("aws-xray-sdk");
+var aws = xray.captureAWS(require("aws-sdk"));
+```
 
 El getSegment() trae el “segment actual” que es inmutable (o sea, iniciado por el ALB/APIGw, o lo que sea...) y el addAnnotation() agrega una nota el segment.
 
-    ```JAVASCRIPT
-    var demo_segment = xray.getSegment().addNewSubsegment("demo");
-    demo_segment.addAnnotation("Object", object);```
+```javascript
+var demo_segment = xray.getSegment().addNewSubsegment("demo");
+demo_segment.addAnnotation("Object", object);
+```
 
 Con el addMetadata,  tu también puedes agregar cualquier otro obyecto el trace, aún que no sea “searchable”.
 
-  ```JAVASCRIPT
-  demo_segment.addMetadata(object, data);```
+```javascript
+demo_segment.addMetadata(object, data);
+```
   
 Después de finalizar el proceso y cerrar el callback, también cerramos el segment. Debes hacerlo con cualquier segment que sea customizado por vos, mientras los segmentos “inmutables” van a ser cerrados por el propio SDK.
 
-    ```JAVASCRIPT
-    demo_segment.close();
-    callback(null, "done");```
+```javascript
+demo_segment.close();
+callback(null, "done");
+```
 
 Eso es básicamente todo lo que requiere el SDK de X-Ray. De ahí, creo que puedes avanzar en hacer testeos.
 
@@ -64,9 +68,7 @@ Es interesante también mirar el ejemplo q tenemos (también en node...): [xray 
 La pantilla tiene 3 secciones y la creación de los recursos necesarios.
 
 ```YAML
-Description:T
-Parameters:T
-Resources:
+Resources: 
     MyLambdaFunction:T
     LambdaExecutionRole:T
     BucketSource:T
