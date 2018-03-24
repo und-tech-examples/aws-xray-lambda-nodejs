@@ -68,6 +68,10 @@ Es interesante también mirar el ejemplo q tenemos (también en node...): [xray 
 La pantilla tiene 3 secciones y la creación de los recursos necesarios.
 
 ```YAML
+Description: 
+...
+Parameters: 
+...
 Resources: 
     MyLambdaFunction:T
     LambdaExecutionRole:T
