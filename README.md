@@ -5,6 +5,7 @@ Demo para analizar aplicaciones con AWS x-ray con el que podrías encontrar la c
 # ![demo2](aws-xray-lambda-nodejs-demo-2-.png)
 
 # Arquitectura
+Está demo tiene como origen un bucket en S3, cuando se sube un archivo a s3 se ejecuta la función lambda que inserta los datos del archivo subido a DynamoDB
 # ![arquitectura](aws-xray-lambda-nodejs-architecture.png)
 
 # Pasos simples
