@@ -1,3 +1,6 @@
+//Orbis Ventures SAC
+//Developed by: Roberto Carlos Reyes Fernández
+// For development/testing purposes
 var xray = require("aws-xray-sdk");
 var aws = xray.captureAWS(require("aws-sdk"));
 
