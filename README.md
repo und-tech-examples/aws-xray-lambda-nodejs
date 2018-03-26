@@ -8,30 +8,26 @@ Demo para analizar aplicaciones con AWS x-ray con el que podrías encontrar la c
 Está demo tiene como origen un bucket en S3, cuando se sube un archivo a s3 se ejecuta la función lambda que inserta los datos del archivo subido a DynamoDB
 # ![arquitectura](aws-xray-lambda-nodejs-architecture.png)
 
-# Pasos simples
-* Instalar el módulo de x-ray para nodejs
-* Subir el código comprimido en zip a s3
-* Crear el stack en CloudFormation
-
-# Instalación
+# Instalar DEMO
 Se debe ejecutar la plantilla en CloudFormation para crear los recursos, donde se utiliza S3 como trigger para ejecutar una función Lambda quien inserta un registro en DynamoDB, todo este proceso está monitoreado por AWS x-ray.
 
+El código fuente se encuentra publicado en nuestro bucket. 
+
+```bash
+aws cloudformation deploy --template-file template.yaml --stack-name aws-xray-lambda-nodejs --capabilities CAPABILITY_NAMED_IAM --region us-east-1 
+```
+
+# Instalación personalizada
 Se instala el SDK del X-Ray con npm
 ```bash 
 npm install aws-xray-sdk
 ```
-
 >Puedes instalar el módulo de X-Ray con npm usando un contenedor chainio/lambda-ci-nodejs6.10
 
 >```bash
 >docker run -ti --privileged -v C:\Users\rctaptap\laboratorios:/data --name node_01 -d chainio/lambda-ci-nodejs6.10 /bin/bash
 >docker exec -ti node_01 bash
 >```
-
-Una vez subido el archivo comprimido en .zip a s3 se ejecuta la plantilla en el servicio CloudFormation desde la consola web o con AWS CLI con el siguiente comando:
-```bash
-aws cloudformation deploy --template-file template.yaml --stack-name aws-xray-lambda-nodejs --parameter-overrides Owner=und Project=xray Environment=demo Type=serverless SourceBucketName="[bucketSource]" SourceBucketKey="[mi-codigo.zip]" --capabilities CAPABILITY_NAMED_IAM --region ap-northeast-1 
-```
 
 # [Detalle del código](https://github.com/OrbisVentures/aws-xray-lambda-nodejs/blob/master/index.js)
 
