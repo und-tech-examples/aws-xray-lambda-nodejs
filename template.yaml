@@ -14,10 +14,10 @@ Parameters:
     Default: serverless
   SourceBucketName:
     Type: String
-    Default: bucket
+    Default: und.pe
   SourceBucketKey:
     Type: String
-    Default: rctaptap/aws-xray-lambda-nodejs.zip
+    Default: labs/aws-xray-lambda-nodejs/aws-xray-lambda-nodejs.zip
 Resources:
   MyLambdaFunction:
     Type: "AWS::Lambda::Function"
