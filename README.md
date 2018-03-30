@@ -11,7 +11,7 @@ Está demo tiene como origen un bucket en S3, cuando se sube un archivo a s3 se 
 # ![arquitectura](aws-xray-lambda-nodejs-architecture.png)
 
 # Instalar DEMO
-Se debe ejecutar la plantilla en CloudFormation para crear los recursos, donde se utiliza S3 como trigger para ejecutar una función Lambda quien inserta un registro en DynamoDB, todo este proceso está monitoreado por AWS x-ray.
+Para probar está demo solo debes ejecutar la plantilla en CloudFormation para crear los recursos, donde se utiliza S3 como trigger para ejecutar una función Lambda quien inserta un registro en DynamoDB, todo este proceso está monitoreado por AWS x-ray.
 
 El código fuente se encuentra publicado en nuestro bucket de la región Virginia. 
 
