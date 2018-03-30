@@ -14,7 +14,7 @@ Parameters:
     Default: serverless
   SourceBucketName:
     Type: String
-    Default: und.pe
+    Default: labs.und.pe
   SourceBucketKey:
     Type: String
     Default: labs/aws-xray-lambda-nodejs/aws-xray-lambda-nodejs.zip
